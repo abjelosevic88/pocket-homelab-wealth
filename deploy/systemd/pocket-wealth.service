@@ -1,0 +1,23 @@
+[Unit]
+Description=Pocket Wealth — everything you own and owe
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pocket-wealth
+Group=pocket-wealth
+ExecStart=/usr/local/bin/pocket-wealth
+Environment=DATA_DIR=/var/lib/pocket-wealth
+Environment=PORT=8080
+Environment=BASE_URL=https://wealth.example.com
+Environment=SECURE_COOKIES=true
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/pocket-wealth
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

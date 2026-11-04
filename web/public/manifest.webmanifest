@@ -1,0 +1,51 @@
+{
+  "name": "Pocket Wealth",
+  "short_name": "Wealth",
+  "description": "Everything you own and owe in one number: savings, investments, pension, property and debts, net worth over time and a plan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#8a6400",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Update a value",
+      "url": "/?add=value"
+    },
+    {
+      "name": "Assets and debts",
+      "url": "/assets"
+    },
+    {
+      "name": "Investments",
+      "url": "/investments"
+    }
+  ]
+}
