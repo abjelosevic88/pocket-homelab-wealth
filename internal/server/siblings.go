@@ -30,6 +30,7 @@ const (
 	scopeHomeRead      = "home:read"
 	scopeVehiclesRead  = "vehicles:read"
 	scopeItemsRead     = "items:read"
+	scopeRentalsRead   = "rentals:read"
 )
 
 // pocketApp is one sibling Pocket app Wealth acts in.
@@ -44,8 +45,9 @@ var (
 	appGarage    = pocketApp{"garage", "Pocket Garage", []string{scopeVehiclesRead}, "Count your vehicles at an estimated value, from what you paid and how old they are, until you sell them"}
 	appHome      = pocketApp{"home", "Pocket Home", []string{scopeHomeRead}, "Add your homes as property, with a link back to their upkeep"}
 	appInventory = pocketApp{"inventory", "Pocket Inventory", []string{scopeItemsRead, scopeEventsRead}, "Count the valuable things you own at what they cost, as you add them"}
+	appRentals   = pocketApp{"rentals", "Pocket Rentals", []string{scopeRentalsRead}, "Count the places you let out at what each is worth today, kept up to date as you change it there"}
 	appDocuments = pocketApp{"documents", "Pocket Documents", []string{scopeDocumentsRead}, "Keep statements and contracts with an asset, and read a balance from a statement with AI"}
-	pocketApps   = []pocketApp{appMoney, appGarage, appHome, appInventory, appDocuments}
+	pocketApps   = []pocketApp{appMoney, appGarage, appHome, appInventory, appRentals, appDocuments}
 )
 
 func appBySlug(slug string) (pocketApp, bool) {

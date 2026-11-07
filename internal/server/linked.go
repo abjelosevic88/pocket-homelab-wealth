@@ -15,13 +15,14 @@ import (
 
 // ---- what the other Pocket apps already know ----
 //
-// Money accounts and loans, Garage vehicles, Home homes and the valuable
-// things in Inventory are offered as suggestions; added, they stay linked:
-// a Money balance and the Inventory total are read again every hour (and
-// a few seconds after a change, with the events link), a vehicle follows
+// Money accounts and loans, Garage vehicles, Home homes, the valuable
+// things in Inventory and the places let out in Rentals are offered as
+// suggestions; added, they stay linked: a Money balance and the Inventory
+// total are read again every hour (and a few seconds after a change, with
+// the events link), a Rentals place's value every hour, a vehicle follows
 // its purchase price and is closed when Garage says it was sold, a home
 // keeps its name. Source refs: money:account:<id>, garage:vehicle:<id>,
-// home:home:<id>, inventory:items.
+// home:home:<id>, inventory:items, rentals:property:<id>.
 
 // suggestion is something in another app that could be an asset.
 type suggestion struct {
@@ -36,7 +37,8 @@ type suggestion struct {
 	AssetID   *int64 `json:"asset_id"`
 	Dismissed bool   `json:"dismissed"`
 
-	asset store.Asset // what adding it creates
+	asset   store.Asset // what adding it creates
+	homeRef string      // a Rentals place that is also a Pocket Home home: its id there
 }
 
 type appSuggestions struct {
@@ -108,7 +110,7 @@ func (s *Server) suggestionsFor(ctx context.Context, uid int64) ([]appSuggestion
 	dismissed, _ := s.store.Dismissed(ctx, uid)
 	c := s.clients(ctx, uid)
 	out := []appSuggestions{}
-	for _, app := range []pocketApp{appMoney, appGarage, appHome, appInventory} {
+	for _, app := range linkedApps {
 		g := appSuggestions{App: app.slug, Name: app.name, Items: []suggestion{}}
 		items, err := s.appSuggestions(ctx, c, st, app)
 		if err != nil {
@@ -124,12 +126,19 @@ func (s *Server) suggestionsFor(ctx context.Context, uid int64) ([]appSuggestion
 				it.AssetID = &id
 			}
 			_, it.Dismissed = dismissed[it.Ref]
+			if _, ok := have["home:home:"+it.homeRef]; ok && it.homeRef != "" && it.AssetID == nil {
+				it.Subtitle += " · already here from Pocket Home: add only one"
+			}
 			g.Items = append(g.Items, it)
 		}
 		out = append(out, g)
 	}
 	return out, nil
 }
+
+// linkedApps are the apps whose things can become linked assets, in the
+// order From my apps shows them.
+var linkedApps = []pocketApp{appMoney, appGarage, appHome, appInventory, appRentals}
 
 // appSuggestions reads one app.
 func (s *Server) appSuggestions(ctx context.Context, c *clients, st store.Settings, app pocketApp) ([]suggestion, error) {
@@ -233,6 +242,34 @@ func (s *Server) appSuggestions(ctx context.Context, c *clients, st store.Settin
 					Include: true, Share: 1, Source: "home", SourceRef: ref, SourceURL: url}})
 		}
 		return out, nil
+	case "rentals":
+		sib, err := c.conn(ctx, appRentals, scopeRentalsRead)
+		if err != nil {
+			return nil, err
+		}
+		props, err := sib.client.Properties(ctx)
+		if err != nil {
+			return nil, err
+		}
+		out := []suggestion{}
+		for _, p := range props {
+			if p.Archived || p.Value <= 0 {
+				continue // nothing to count without a value there
+			}
+			ref := "rentals:property:" + strconv.FormatInt(p.ID, 10)
+			url := strings.TrimRight(sib.public, "/") + "/properties/" + strconv.FormatInt(p.ID, 10)
+			cur := firstNonEmpty(p.Currency, st.Currency)
+			v := p.Value
+			a := store.Asset{Name: p.Name, Kind: "property", Currency: cur, Notes: strings.Trim(strings.TrimSpace(p.Address)+", "+strings.TrimSpace(p.City), ", "),
+				ValueMode: "linked", Include: true, Share: 1, BoughtOn: p.BoughtOn, Source: "rentals", SourceRef: ref, SourceURL: url, LinkedValue: &v, LinkedAt: store.Now()}
+			if p.BoughtFor > 0 {
+				b := p.BoughtFor
+				a.BoughtPrice = &b
+			}
+			out = append(out, suggestion{Ref: ref, App: "rentals", Title: p.Name, Subtitle: rentalsSubtitle(p), Kind: "property", Value: &v, Currency: cur, URL: url,
+				asset: a, homeRef: strings.TrimSpace(p.HomeRef)})
+		}
+		return out, nil
 	case "inventory":
 		sib, err := c.conn(ctx, appInventory, scopeItemsRead)
 		if err != nil {
@@ -251,6 +288,24 @@ func (s *Server) appSuggestions(ctx context.Context, c *clients, st store.Settin
 				Notes: "The items in Pocket Inventory with a price, at what they cost."}}}, nil
 	}
 	return nil, nil
+}
+
+// rentalsSubtitle says what a place let out is: "Let out · Ilica 10, Zagreb ·
+// 2 of 3 let · rent 1,350 EUR a month".
+func rentalsSubtitle(p pocket.Property) string {
+	sub := "Let out"
+	if where := strings.Trim(strings.TrimSpace(p.Address)+", "+strings.TrimSpace(p.City), ", "); where != "" {
+		sub += " · " + where
+	}
+	if p.UnitCount > 1 {
+		sub += fmt.Sprintf(" · %d of %d let", p.Let, p.UnitCount)
+	} else if p.Let == 0 {
+		sub += " · empty now"
+	}
+	if p.RentRoll > 0 {
+		sub += " · rent " + money(p.RentRoll, p.Currency) + " a month"
+	}
+	return sub
 }
 
 // inventoryTotal adds up what the valuable items cost (Inventory keeps one
@@ -303,7 +358,7 @@ func (s *Server) handleAddSuggestion(w http.ResponseWriter, r *http.Request) {
 	st, _ := s.store.GetSettings(ctx, uid)
 	c := s.clients(ctx, uid)
 	added := []int64{}
-	for _, app := range []pocketApp{appMoney, appGarage, appHome, appInventory} {
+	for _, app := range linkedApps {
 		need := false
 		for ref := range want {
 			if strings.HasPrefix(ref, app.slug+":") {
@@ -376,6 +431,7 @@ func (s *Server) refreshLinked(ctx context.Context, uid int64, only string) (int
 	var accts map[int64]pocket.Account
 	var vehicles map[int64]pocket.Vehicle
 	var homes map[int64]pocket.Home
+	var places map[int64]pocket.Property
 	var errs = map[string]error{}
 	changed := 0
 	for i := range assets {
@@ -499,6 +555,45 @@ func (s *Server) refreshLinked(ctx context.Context, uid int64, only string) (int
 				continue
 			}
 			_ = s.store.SetLinked(ctx, uid, a.ID, nil, "", "")
+		case "rentals":
+			if places == nil && errs["rentals"] == nil {
+				places = map[int64]pocket.Property{}
+				if sib, err := c.conn(ctx, appRentals, scopeRentalsRead); err != nil {
+					errs["rentals"] = err
+				} else if list, err := sib.client.Properties(ctx); err != nil {
+					errs["rentals"] = err
+				} else {
+					for _, x := range list {
+						places[x.ID] = x
+					}
+				}
+			}
+			if e := errs["rentals"]; e != nil {
+				fail(e)
+				continue
+			}
+			p, ok := places[id]
+			if !ok || p.Archived {
+				fail(fmt.Errorf("this place is no longer in Pocket Rentals (deleted or archived)"))
+				continue
+			}
+			if p.Value <= 0 {
+				fail(fmt.Errorf("it has no value for this place now"))
+				continue
+			}
+			v := p.Value
+			if a.LinkedValue == nil || *a.LinkedValue != v || a.LinkedError != "" {
+				changed++
+			}
+			_ = s.store.SetLinked(ctx, uid, a.ID, &v, "", "")
+			if p.BoughtFor > 0 && (a.BoughtPrice == nil || *a.BoughtPrice != p.BoughtFor) || (p.BoughtOn != "" && p.BoughtOn != a.BoughtOn) {
+				if p.BoughtFor > 0 {
+					b := p.BoughtFor
+					a.BoughtPrice = &b
+				}
+				a.BoughtOn = firstNonEmpty(p.BoughtOn, a.BoughtOn)
+				_ = s.store.UpdateAsset(ctx, uid, a)
+			}
 		}
 	}
 	if changed > 0 {

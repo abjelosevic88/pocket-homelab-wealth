@@ -264,6 +264,36 @@ func (c *Client) Homes(ctx context.Context) ([]Home, error) {
 	return list[Home](raw, "homes")
 }
 
+// ---------------- Pocket Rentals ----------------
+
+// Property is a place let out in Pocket Rentals. Money is in cents of the
+// place's currency.
+type Property struct {
+	ID        int64  `json:"id"`
+	Name      string `json:"name"`
+	Kind      string `json:"kind"`
+	Address   string `json:"address"`
+	City      string `json:"city"`
+	Currency  string `json:"currency"`
+	Value     int64  `json:"value"` // what it is worth today
+	BoughtOn  string `json:"bought_on"`
+	BoughtFor int64  `json:"bought_for"`
+	HomeRef   string `json:"home_ref"` // the Pocket Home home it is, if linked
+	Archived  bool   `json:"archived"`
+	UnitCount int    `json:"unit_count"`
+	Let       int    `json:"let"`       // units with an active lease
+	RentRoll  int64  `json:"rent_roll"` // monthly rent of the active leases
+}
+
+// Properties lists the person's places that are not archived.
+func (c *Client) Properties(ctx context.Context) ([]Property, error) {
+	var raw json.RawMessage
+	if err := c.do(ctx, http.MethodGet, "/api/v1/properties", nil, nil, &raw); err != nil {
+		return nil, err
+	}
+	return list[Property](raw, "properties")
+}
+
 // ---------------- Pocket Inventory ----------------
 
 // Item is a Pocket Inventory item.

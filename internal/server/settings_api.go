@@ -342,6 +342,17 @@ func (s *Server) handleIntegrationTest(w http.ResponseWriter, r *http.Request) {
 					if vs, err = conn.client.Vehicles(ctx); err == nil {
 						msg += fmt.Sprintf(", %d vehicles", len(vs))
 					}
+				case "rentals":
+					var props []pocket.Property
+					if props, err = conn.client.Properties(ctx); err == nil {
+						valued := 0
+						for _, p := range props {
+							if p.Value > 0 {
+								valued++
+							}
+						}
+						msg += fmt.Sprintf(", %d places, %d with a value", len(props), valued)
+					}
 				case "inventory":
 					var items []pocket.Item
 					if items, err = conn.client.Items(ctx); err == nil {
