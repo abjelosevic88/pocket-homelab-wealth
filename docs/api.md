@@ -47,12 +47,12 @@ JSON over HTTP at `/api/v1`. Authenticate with the session cookie, a personal to
 
 | Call | What |
 |---|---|
-| `GET /suggestions` | Per app (money, garage, home, inventory): what could be added, and what already is (`asset_id`) |
-| `POST /suggestions/add` | `{refs: ["money:account:4", "garage:vehicle:2", "home:home:1", "inventory:items"]}` |
+| `GET /suggestions` | Per app (money, garage, home, inventory, rentals): what could be added, and what already is (`asset_id`) |
+| `POST /suggestions/add` | `{refs: ["money:account:4", "garage:vehicle:2", "home:home:1", "inventory:items", "rentals:property:3"]}` |
 | `POST /suggestions/dismiss` | `{ref, title, restore}` |
 | `POST /linked/refresh` | Read every linked value again now (it also happens every hour, and seconds after a change with the events link) |
 
-What is read: Money `GET /accounts` (balances; debts are what is owed) and `GET /transactions?from&to&limit=1` (the month's totals, for the plan); Garage `GET /vehicles` (purchase price and date, sold); Home `GET /homes`; Inventory `GET /items` (price × quantity of the items worth at least the minimum).
+What is read: Money `GET /accounts` (balances; debts are what is owed) and `GET /transactions?from&to&limit=1` (the month's totals, for the plan); Garage `GET /vehicles` (purchase price and date, sold); Home `GET /homes`; Inventory `GET /items` (price × quantity of the items worth at least the minimum); Rentals `GET /properties` (`value` of each place that has one, linked as property `rentals:property:<id>` with a link to `/properties/<id>`, `bought_on`/`bought_for` as bought; `rent_roll` is only shown, as rent already arrives in Money).
 
 ## For other apps (Pocket Core links)
 
