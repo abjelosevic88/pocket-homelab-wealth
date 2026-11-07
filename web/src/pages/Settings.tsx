@@ -199,6 +199,7 @@ const APPS: { slug: AppSlug; name: string; icon: string; title: string; sub: str
   { slug: 'garage', name: 'Pocket Garage', icon: 'car', title: 'Pocket Garage — vehicles', sub: 'Your vehicles at an estimated value from what you paid and how old they are; closed when Garage says sold.', token: 'Pocket Garage → Settings → API tokens', port: '8175' },
   { slug: 'home', name: 'Pocket Home', icon: 'home', title: 'Pocket Home — homes', sub: 'Your homes as property, with a link back to their upkeep. You add what each is worth.', token: 'Pocket Home → Settings → API & shortcuts', port: '8229' },
   { slug: 'inventory', name: 'Pocket Inventory', icon: 'package', title: 'Pocket Inventory — valuables', sub: 'The things you own with a price, added up at what they cost.', token: 'Pocket Inventory → Settings → API tokens', port: '8170' },
+  { slug: 'rentals', name: 'Pocket Rentals', icon: 'key', title: 'Pocket Rentals — places you let out', sub: 'The places you rent out at what each is worth today, read again every hour; places without a value there are left out.', token: 'Pocket Rentals → Settings → API & shortcuts', port: '8253' },
   { slug: 'documents', name: 'Pocket Documents', icon: 'file', title: 'Pocket Documents — statements and contracts', sub: 'Keep a statement or a loan contract with an asset, and let AI read a balance from a statement.', token: 'Pocket Documents → Settings → API tokens', port: '8183' },
 ]
 

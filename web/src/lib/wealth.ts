@@ -59,10 +59,10 @@ export const ACTIVITY: Record<string, { label: string; icon: string; past: strin
 }
 
 export const SOURCE_NAME: Record<string, string> = {
-  money: 'Pocket Money', garage: 'Pocket Garage', home: 'Pocket Home', inventory: 'Pocket Inventory', documents: 'Pocket Documents',
+  money: 'Pocket Money', garage: 'Pocket Garage', home: 'Pocket Home', inventory: 'Pocket Inventory', rentals: 'Pocket Rentals', documents: 'Pocket Documents',
   web: 'Added here', demo: 'Example', import: 'Imported', api: 'API', auto: 'By itself', ai: 'Read by AI',
 }
-export const SOURCE_ICON: Record<string, string> = { money: 'wallet', garage: 'car', home: 'home', inventory: 'package', documents: 'file' }
+export const SOURCE_ICON: Record<string, string> = { money: 'wallet', garage: 'car', home: 'home', inventory: 'package', rentals: 'key', documents: 'file' }
 export const linkedApp = (ref: string) => (ref || '').split(':')[0]
 
 // ---- money ----

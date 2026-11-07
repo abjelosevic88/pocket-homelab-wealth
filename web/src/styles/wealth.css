@@ -246,7 +246,7 @@ a.list-row:hover, .list-row:has(> a.row-main:hover) { background: var(--hover); 
 .list-ico[class*="gr-"], .detail-ico[class*="gr-"] { background: color-mix(in srgb, var(--c) 13%, transparent); color: var(--c); }
 [data-theme="dark"] .list-ico[class*="gr-"], [data-theme="dark"] .detail-ico[class*="gr-"] { color: color-mix(in srgb, var(--c) 55%, #fff); background: color-mix(in srgb, var(--c) 24%, transparent); }
 .list-ico.sm { width: 24px; height: 24px; border-radius: 7px; }
-.list-ico.app-money, .list-ico.app-garage, .list-ico.app-home, .list-ico.app-inventory { background: var(--accent-soft); color: var(--accent-ink); }
+.list-ico.app-money, .list-ico.app-garage, .list-ico.app-home, .list-ico.app-inventory, .list-ico.app-rentals { background: var(--accent-soft); color: var(--accent-ink); }
 @media (max-width: 640px) {
   .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; }
   .chip { flex-shrink: 0; }

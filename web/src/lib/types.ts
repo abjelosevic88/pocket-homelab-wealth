@@ -3,7 +3,7 @@ export interface APIToken { id: number; user_id: number; name: string; prefix: s
 
 export type ConnMode = 'core' | 'direct' | 'off'
 export type ConnVia = '' | 'core' | 'direct'
-export type AppSlug = 'money' | 'garage' | 'home' | 'inventory' | 'documents'
+export type AppSlug = 'money' | 'garage' | 'home' | 'inventory' | 'rentals' | 'documents'
 
 type ConnFields = { [K in AppSlug as `${K}_mode`]: ConnMode } & { [K in AppSlug as `${K}_via`]: ConnVia } & { [K in AppSlug as `${K}_detail` | `${K}_url` | `${K}_token` | `${K}_public_url` | `${K}_open_url`]: string } & { [K in AppSlug as `${K}_configured`]: boolean }
 

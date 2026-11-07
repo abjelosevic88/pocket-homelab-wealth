@@ -1,4 +1,4 @@
-// From my apps: what Pocket Money, Garage, Home and Inventory already know, to add as linked assets.
+// From my apps: what Pocket Money, Garage, Home, Inventory and Rentals already know, to add as linked assets.
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, V1 } from '../lib/api'
@@ -14,6 +14,7 @@ const WHAT: Record<string, string> = {
   garage: 'Vehicles, valued from what you paid and how old they are; closed when sold.',
   home: 'Your homes as property; you add what each is worth.',
   inventory: 'The valuable things you own, at what they cost.',
+  rentals: 'The places you let out, at what each is worth there; the value follows when you change it.',
 }
 
 export default function Connect() {

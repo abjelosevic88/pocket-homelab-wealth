@@ -123,9 +123,9 @@ function Shell() {
     { id: 'inv', label: 'Investments', icon: 'trending-up', hint: 'I', keywords: 'portfolio funds shares etf crypto dividends', run: () => navigate('/investments') },
     { id: 'debts', label: 'Debts', icon: 'landmark', hint: 'D', keywords: 'mortgage loan payoff', run: () => navigate('/debts') },
     { id: 'plan', label: 'The plan', icon: 'milestone', hint: 'P', keywords: 'financial independence fire projection retire milestones', run: () => navigate('/plan') },
-    { id: 'connect', label: 'From my apps', icon: 'layers', keywords: 'money garage home inventory link', run: () => navigate('/connect') },
+    { id: 'connect', label: 'From my apps', icon: 'layers', keywords: 'money garage home inventory rentals link', run: () => navigate('/connect') },
     { id: 'settings', label: 'Settings', icon: 'settings', hint: ',', run: () => navigate('/settings') },
-    { id: 'apps', label: 'Settings: connected apps', icon: 'layers', keywords: 'money garage home inventory documents core', run: () => navigate('/settings/apps') },
+    { id: 'apps', label: 'Settings: connected apps', icon: 'layers', keywords: 'money garage home inventory rentals documents core', run: () => navigate('/settings/apps') },
     { id: 'rates', label: 'Settings: currency and exchange rates', icon: 'globe', keywords: 'currency rates prices online', run: () => navigate('/settings/general') },
     { id: 'shortcuts', label: 'Keyboard shortcuts', icon: 'keyboard', hint: '?', run: () => setShortcuts(true) },
   ]
