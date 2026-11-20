@@ -58,6 +58,8 @@ What is read: Money `GET /accounts` (balances; debts are what is owed) and `GET 
 
 Wealth offers `wealth:read` (summary, overview, history, assets, positions, activity, debts, plan, maturing, kinds, search, day) and `wealth:write` (`POST /assets`, `PUT/DELETE /assets/{id}`, `POST /assets/{id}/valuations`, `DELETE /valuations/{id}`, `POST /activity`, `DELETE /activity/{id}`). An app may change or delete only what it added itself.
 
+Pocket Move can copy your assets, values and investments out and bring them in: `move:export` reads `GET /export.json` and `GET /export.csv`, `move:import` posts `POST /import` (adds; a second run of the same file adds nothing). `GET /pocket/portable` describes both.
+
 Events, each with `user_email`: `wealth.asset_saved`, `wealth.valuation_added`, `wealth.activity_added`, `wealth.milestone_reached`, `wealth.monthly` (on the 1st: last month's net worth and change), `wealth.matures_soon` (30 and 7 days before, and on the day).
 
 ## Everything else
