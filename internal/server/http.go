@@ -61,6 +61,11 @@ func (s *Server) Router() http.Handler {
 			r.Get("/search", s.handleSearch)
 			r.Get("/kinds", s.handleKinds)
 
+			// for Pocket Search, Pocket Day and Pocket Hub (capabilities.go)
+			r.Get("/pocket/search", core.SearchHandler(s.pocketSearch))
+			r.Get("/pocket/day/{date}", core.DayHandler(s.pocketDay))
+			r.Get("/pocket/widget", core.WidgetHandler(s.pocketWidget))
+
 			// assets and debts
 			r.Get("/assets", s.handleListAssets)
 			r.Post("/assets", s.handleCreateAsset)

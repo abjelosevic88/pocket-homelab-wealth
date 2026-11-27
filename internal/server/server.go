@@ -193,10 +193,12 @@ func (s *Server) registerWithCore(ctx context.Context) error {
 		Description: "Everything you own and owe, in one number: bank accounts and savings, investments with live prices, pension, property, vehicles and valuables, minus loans and cards. Net worth over time, what each investment gained, when each debt is paid off, and a plan that says when you reach financial independence. Brings in your Pocket Money accounts, Garage vehicles, Home homes and Inventory valuables.",
 		Icon:        "/favicon.svg", Version: Version,
 		URL: s.cfg.CoreAppURL, PublicURL: s.cfg.BaseURL, HealthPath: "/healthz", EnvPrefix: "WEALTH",
-		Publishes: eventTopics,
-		Offers:    linkOffers,
-		Portable:  portable,
-		Uses:      append(linkUses(), core.InferenceUse()),
+		Publishes:    eventTopics,
+		Offers:       linkOffers,
+		Portable:     portable,
+		Category:     "Money",
+		Capabilities: capabilities,
+		Uses:         append(linkUses(), core.InferenceUse()),
 	}
 	if s.cfg.BaseURL != "" {
 		m.OIDC = &core.OIDCRequest{RedirectURIs: []string{s.oidcCallbackURL()}}

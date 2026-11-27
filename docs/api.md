@@ -58,6 +58,16 @@ What is read: Money `GET /accounts` (balances; debts are what is owed) and `GET 
 
 Wealth offers `wealth:read` (summary, overview, history, assets, positions, activity, debts, plan, maturing, kinds, search, day) and `wealth:write` (`POST /assets`, `PUT/DELETE /assets/{id}`, `POST /assets/{id}/valuations`, `DELETE /valuations/{id}`, `POST /activity`, `DELETE /activity/{id}`). An app may change or delete only what it added itself.
 
+For Pocket Search, Pocket Day and Pocket Hub, Wealth answers in the shape every Pocket app shares (`docs/capabilities.md` in pocket-homelab-core), each route opened by its own scope and only reading what is stored here (no price is looked up and no other app is asked):
+
+| Route | Scope | What |
+|---|---|---|
+| `GET /pocket/search?q&limit` | `pocket:search` | Assets and debts by name, kind, bank, number or notes (`asset:<id>`, kind `asset` or `debt`, what it is worth now · kind · last updated), then holdings by name or symbol (`holding:<id>`), each opening `/a/<id>`. Bangs `!wealth`, `!networth` |
+| `GET /pocket/day/{date}` | `pocket:day` | What `/day` lists (buys, sells, dividends; values typed in, a debt paid down), what was sold or paid off, and net worth at the end of the day with the month's change, whenever a value was written down that day |
+| `GET /pocket/widget` | `pocket:widget` | Net worth now and this month, what you own and owe, the biggest few assets and debts with their amounts (as the Overview shows them); nothing when there is nothing yet |
+
+There is no quick capture: an asset or a value needs its form.
+
 Pocket Move can copy your assets, values and investments out and bring them in: `move:export` reads `GET /export.json` and `GET /export.csv`, `move:import` posts `POST /import` (adds; a second run of the same file adds nothing). `GET /pocket/portable` describes both.
 
 Events, each with `user_email`: `wealth.asset_saved`, `wealth.valuation_added`, `wealth.activity_added`, `wealth.milestone_reached`, `wealth.monthly` (on the 1st: last month's net worth and change), `wealth.matures_soon` (30 and 7 days before, and on the day).

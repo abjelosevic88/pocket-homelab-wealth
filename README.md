@@ -53,7 +53,7 @@ Set `CORE_URL` and `CORE_REGISTRATION_KEY` and Wealth joins the box: people sign
 | Pocket Rentals | the places you let out at what each is worth today | `rentals:read` |
 | Pocket Documents | statements and contracts kept with an asset, a balance read by AI | `documents:read` |
 
-Other apps can read your net worth (`wealth:read`: Pocket AI, Pocket Day's journal, Pocket Renewals for deposits that mature and fixed rates that end) or add values, buys and dividends (`wealth:write`). Events on the bus: `wealth.asset_saved`, `wealth.valuation_added`, `wealth.activity_added`, `wealth.milestone_reached`, `wealth.monthly`, `wealth.matures_soon`. Without Core every connection can be made directly with a URL and a token; the Core-only choices stay visible, greyed out.
+Other apps can read your net worth (`wealth:read`: Pocket AI, Pocket Day's journal, Pocket Renewals for deposits that mature and fixed rates that end) or add values, buys and dividends (`wealth:write`). Pocket Search finds your assets, debts and holdings (`!wealth`, `!networth`), Pocket Day writes down net worth and what changed each day, and Pocket Hub shows your net worth with the biggest assets and debts (`pocket:search`, `pocket:day`, `pocket:widget`; all three only read what is stored here). Events on the bus: `wealth.asset_saved`, `wealth.valuation_added`, `wealth.activity_added`, `wealth.milestone_reached`, `wealth.monthly`, `wealth.matures_soon`. Without Core every connection can be made directly with a URL and a token; the Core-only choices stay visible, greyed out.
 
 ## Build
 

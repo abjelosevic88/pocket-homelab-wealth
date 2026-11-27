@@ -33,6 +33,16 @@ var portable = &core.Portable{
 	},
 }
 
+// capabilities is what Pocket Search, Pocket Day and Pocket Hub may ask
+// (docs/capabilities.md in pocket-homelab-core; capabilities.go): Register
+// adds the pocket:* offers, each opening its one route. All three only read;
+// there is no capture, since an asset or a value needs its form.
+var capabilities = core.Capabilities{
+	Search: &core.Searchable{What: "What you own and owe, by name, kind, bank or notes, and your holdings", Kinds: []string{"asset", "debt", "holding"}, Bangs: []string{"wealth", "networth"}},
+	Day:    &core.DayFeed{Label: "Wealth", One: "change", Many: "changes", Unit: "amount", What: "Net worth that day, the values you typed in, what you bought, sold or paid off"},
+	Widget: &core.Widget{Title: "Net worth", What: "Net worth now and this month, what you own and owe, and the biggest of each"},
+}
+
 type linkRoute struct {
 	methods string
 	path    *regexp.Regexp
@@ -55,7 +65,7 @@ var errLinkScope = errors.New("outside the link's scope")
 
 // linkAllows reports whether a link token with these scopes may make this request.
 func linkAllows(scopes []string, r *http.Request) bool {
-	if portable.LinkAllows(scopes, r) {
+	if portable.LinkAllows(scopes, r) || capabilities.LinkAllows(scopes, r) {
 		return true
 	}
 	for _, lr := range linkRoutes {
