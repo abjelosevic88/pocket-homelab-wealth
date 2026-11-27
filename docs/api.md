@@ -63,7 +63,7 @@ For Pocket Search, Pocket Day and Pocket Hub, Wealth answers in the shape every 
 | Route | Scope | What |
 |---|---|---|
 | `GET /pocket/search?q&limit` | `pocket:search` | Assets and debts by name, kind, bank, number or notes (`asset:<id>`, kind `asset` or `debt`, what it is worth now · kind · last updated), then holdings by name or symbol (`holding:<id>`), each opening `/a/<id>`. Bangs `!wealth`, `!networth` |
-| `GET /pocket/day/{date}` | `pocket:day` | What `/day` lists (buys, sells, dividends; values typed in, a debt paid down), what was sold or paid off, and net worth at the end of the day with the month's change, whenever a value was written down that day |
+| `GET /pocket/day/{date}` | `pocket:day` | What `/day` lists (buys, sells, dividends; values typed in, a debt paid down), what was sold or paid off, and net worth at the end of the day with the month's change, whenever someone wrote a value down that day (Wealth's own hourly values as prices move do not count) |
 | `GET /pocket/widget` | `pocket:widget` | Net worth now and this month, what you own and owe, the biggest few assets and debts with their amounts (as the Overview shows them); nothing when there is nothing yet |
 
 There is no quick capture: an asset or a value needs its form.
