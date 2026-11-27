@@ -193,13 +193,15 @@ func (s *Server) pocketDay(r *http.Request, date string, _ *time.Location) (*cor
 		}
 		day.Items = append(day.Items, it)
 	}
-	recorded := false // a value was written down for that day, by anyone
+	// a value someone wrote down that day; the hourly "auto" values Wealth keeps
+	// as prices move are not news, so a day with only those stays empty
+	recorded := false
 	var paidOff []string
 	for i := range b.assets {
 		a := &b.assets[i]
 		if v, ok := b.latest(a.ID, date); ok && v.Date == date {
-			recorded = true
 			if v.Source != "auto" {
+				recorded = true
 				it := core.DayItem{ID: "value:" + itoa(v.ID), Title: a.Name, Kind: "value", Amount: v.Value, Currency: a.Currency, URL: assetURL(a.ID), Note: strings.TrimSpace(v.Note)}
 				was, had := b.latest(a.ID, store.AddDays(date, -1))
 				switch {

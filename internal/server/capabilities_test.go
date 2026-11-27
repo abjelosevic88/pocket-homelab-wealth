@@ -234,12 +234,12 @@ func TestPocketDay(t *testing.T) {
 	if len(capItems(t, d)) != 4 || !strings.HasPrefix(d["summary"].(string), "Net worth ") || !strings.HasSuffix(d["summary"].(string), " this month), 4 changes") {
 		t.Fatalf("the first day: %v", d)
 	}
-	// a day with only Wealth's own snapshot: net worth, nothing listed
+	// a day with only Wealth's own hourly value (prices moved): not news, nothing at all
 	snap := store.AddDays(f.before, 2)
 	if err := a.st.PutValuation(context.Background(), a.ids["Alice"], &store.Valuation{AssetID: int64(mustNum(f.broker)), Date: snap, Value: 50000, Source: "auto"}); err != nil {
 		t.Fatal(err)
 	}
-	if d = day(a.alice, snap); len(capItems(t, d)) != 0 || !strings.HasPrefix(d["summary"].(string), "Net worth ") || strings.Contains(d["summary"].(string), "change") {
+	if d = day(a.alice, snap); len(capItems(t, d)) != 0 || d["summary"] != nil || d["metrics"] != nil {
 		t.Fatalf("the snapshot day: %v", d)
 	}
 	// nothing written down: nothing; nor tomorrow
